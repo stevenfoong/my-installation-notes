@@ -1,0 +1,60 @@
+version: '3'
+
+networks:
+  net_rundeck:
+    external:
+      name: net_rundeck
+
+services:
+    rundeck:
+        image: rundeck/rundeck:3.4.2-20210803
+        container_name: rundeck
+        environment:
+            RUNDECK_GRAILS_URL: https://rundeck.volnet.dev
+            RUNDECK_SERVER_FORWARDED: "true"
+            RUNDECK_DATABASE_DRIVER: org.mariadb.jdbc.Driver
+            RUNDECK_DATABASE_USERNAME: rundeck
+            RUNDECK_DATABASE_PASSWORD: 8sr82kyyXrnAdF8y
+            RUNDECK_DATABASE_URL: jdbc:mysql://rundeck_db/rundeck?autoReconnect=true&useSSL=false
+
+            RUNDECK_JAAS_MODULES_0: JettyCombinedLdapLoginModule
+            RUNDECK_JAAS_LDAP_FLAG: sufficient
+            RUNDECK_JAAS_LDAP_PROVIDERURL: ldap://10.104.0.2:389
+            RUNDECK_JAAS_LDAP_BINDDN: uid=ldap-mgmt,ou=people,dc=volnet,dc=dev
+            RUNDECK_JAAS_LDAP_BINDPASSWORD: Totaling-steady-designed-93
+            RUNDECK_JAAS_LDAP_USERBASEDN: ou=people,dc=volnet,dc=dev
+            RUNDECK_JAAS_LDAP_ROLEBASEDN: ou=groups,dc=volnet,dc=dev
+
+            RUNDECK_JAAS_MODULES_1: PropertyFileLoginModule
+            RUNDECK_JAAS_FILE_FLAG: sufficient
+
+
+            RUNDECK_STORAGE_CONVERTER_1_CONFIG_PASSWORD: 5pxZT7bxE3t59ryW
+            RUNDECK_CONFIG_STORAGE_CONVERTER_1_CONFIG_PASSWORD: XPALr44A3ch8fbaL
+        volumes:
+          - /data/rundeck/data:/home/rundeck/server/data
+        expose:
+          - 4440
+        restart: unless-stopped
+        depends_on:
+          - rundeck_db
+        networks:
+          - net_rundeck
+
+
+    rundeck_db:
+        image: mysql:5.7
+        container_name: rundeck_db
+        expose:
+          - 3306
+        environment:
+          - MYSQL_ROOT_PASSWORD=zrbQSs7C4AL4B7QK
+          - MYSQL_DATABASE=rundeck
+          - MYSQL_USER=rundeck
+          - MYSQL_PASSWORD=8sr82kyyXrnAdF8y
+        volumes:
+          - /data/rundeck/mysql:/var/lib/mysql
+        restart: unless-stopped
+        networks:
+          - net_rundeck
+
