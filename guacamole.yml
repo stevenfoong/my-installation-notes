@@ -1,0 +1,58 @@
+version: '3.9'
+
+networks:
+  net_guacamole:
+    external:
+      name: net_guacamole
+  net_openldap:
+    external:
+      name: net_openldap
+
+services:
+  guacd:
+    image: guacamole/guacd:1.3.0
+    container_name: guacd
+    hostname: guacd
+    restart: unless-stopped
+    volumes:
+      - /data/guacamole/guacd/drive:/drive:rw
+      - /data/guacamole/guacd/record:/record:rw
+    networks:
+      - net_guacamole
+
+  guacamole:
+    image: guacamole/guacamole:1.3.0
+    container_name: guacamole
+    hostname: guacamole
+    restart: unless-stopped
+    depends_on:
+      - guacd
+      - guacamole-mysql
+    environment:
+      GUACD_HOSTNAME: guacd
+      MYSQL_HOSTNAME: guacamole-mysql
+      MYSQL_DATABASE: guacadb
+      MYSQL_USER: guacamole_user
+      MYSQL_PASSWORD: password
+      LDAP_HOSTNAME: openldap
+      LDAP_USER_BASE_DN: ou=people,dc=dc,dc=dc
+    ports:
+      - 8081:8080/tcp
+    networks:
+      - net_guacamole
+      - net_openldap
+
+  guacamole-mysql:
+    image: mysql/mysql-server:8.0.23-1.1.19
+    container_name: guacamole-mysql
+    hostname: guacamole-mysql
+    environment:
+      MYSQL_USER: guacamole_user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: guacadb
+    restart: unless-stopped
+    volumes:
+      - /data/guacamole/mysql:/docker-entrypoint-initdb.d:ro
+      - /data/guacamole/mysql/data:/var/lib/mysql/:rw
+    networks:
+      - net_guacamole
