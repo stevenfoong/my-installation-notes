@@ -1,0 +1,154 @@
+version: '2'
+
+networks:
+  net_zammad:
+    external:
+      name: net_zammad
+  net_openldap:
+    external:
+      name: net_openldap
+
+services:
+
+  zammad-backup:
+    container_name: zammad-backup
+    command: ["zammad-backup"]
+    depends_on:
+      - zammad-railsserver
+    entrypoint: /usr/local/bin/backup.sh
+    environment:
+      - BACKUP_SLEEP=86400
+      - HOLD_DAYS=10
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASSWORD=password
+    image: zammad/zammad-docker-compose:zammad-postgresql-4.1.0-17
+    links:
+      - zammad-postgresql
+    restart: unless-stopped
+    volumes:
+      - /data/zammad/backup/backup:/var/tmp/zammad
+      - /data/zammad/backup/data:/opt/zammad
+    networks:
+      - net_zammad
+
+  zammad-elasticsearch:
+    container_name: zammad-elasticsearch
+    environment:
+      - discovery.type=single-node
+    image: zammad/zammad-docker-compose:zammad-elasticsearch-4.1.0-17
+    restart: unless-stopped
+    volumes:
+            - /data/zammad/elasticsearch/data:/usr/share/elasticsearch/dataa
+    networks:
+      - net_zammad
+      - net_openldap
+
+  zammad-init:
+    container_name: zammad-init
+    command: ["zammad-init"]
+    depends_on:
+      - zammad-postgresql
+    environment:
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=password
+    image: zammad/zammad-docker-compose:zammad-4.1.0-17
+    links:
+      - zammad-elasticsearch
+      - zammad-postgresql
+    restart: on-failure
+    volumes:
+      - /data/zammad/data:/opt/zammad
+    networks:
+      - net_zammad
+
+  zammad-memcached:
+    container_name: zammad-memcached
+    command: memcached -m 256M
+    image: memcached:1.6.9-alpine
+    restart: unless-stopped
+    networks:
+      - net_zammad
+      - net_openldap
+
+  zammad-nginx:
+    container_name: zammad
+    command: ["zammad-nginx"]
+    ports:
+      - 8085:8080
+    depends_on:
+      - zammad-railsserver
+    image: zammad/zammad-docker-compose:zammad-4.1.0-17
+    links:
+      - zammad-railsserver
+      - zammad-websocket
+    restart: unless-stopped
+    volumes:
+      - /data/zammad/data:/opt/zammad
+    networks:
+      - net_zammad
+      - net_openldap
+
+  zammad-postgresql:
+    container_name: zammad-postgresql
+    environment:
+      - POSTGRES_USER=zammad
+      - POSTGRES_PASSWORD=password
+    image: zammad/zammad-docker-compose:zammad-postgresql-4.1.0-17
+    restart: unless-stopped
+    volumes:
+      - /data/zammad/postgresql/data:/var/lib/postgresql/data
+    networks:
+      - net_zammad
+
+  zammad-railsserver:
+    container_name: zammad-railsserver
+    command: ["zammad-railsserver"]
+    depends_on:
+      - zammad-memcached
+      - zammad-postgresql
+    image: zammad/zammad-docker-compose:zammad-4.1.0-17
+    links:
+      - zammad-elasticsearch
+      - zammad-memcached
+      - zammad-postgresql
+    restart: unless-stopped
+    volumes:
+      - /data/zammad/data:/opt/zammad
+    networks:
+      - net_zammad
+      - net_openldap
+
+  zammad-scheduler:
+    container_name: zammad-scheduler
+    command: ["zammad-scheduler"]
+    depends_on:
+      - zammad-memcached
+      - zammad-railsserver
+    image: zammad/zammad-docker-compose:zammad-4.1.0-17
+    links:
+      - zammad-elasticsearch
+      - zammad-memcached
+      - zammad-postgresql
+    restart: unless-stopped
+    volumes:
+      - /data/zammad/data:/opt/zammad
+    networks:
+      - net_zammad
+      - net_openldap
+
+  zammad-websocket:
+    container_name: zammad-websocket
+    command: ["zammad-websocket"]
+    depends_on:
+      - zammad-memcached
+      - zammad-railsserver
+    image: zammad/zammad-docker-compose:zammad-4.1.0-17
+    links:
+      - zammad-postgresql
+      - zammad-memcached
+    restart: unless-stopped
+    volumes:
+      - /data/zammad/data:/opt/zammad
+    networks:
+      - net_zammad
+      - net_openldap
