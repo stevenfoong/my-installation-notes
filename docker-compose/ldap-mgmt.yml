@@ -1,0 +1,47 @@
+version: '3.9'
+
+networks:
+  net_master_nginx:
+    external:
+      name: net_master_nginx
+
+services:
+  ldap-mgmt:
+    image: wheelybird/ldap-user-manager:v1.7
+    container_name: ldap-mgmt
+    restart: unless-stopped
+    networks:
+      - net_master_nginx
+    expose:
+      - 80
+    environment:
+      - SERVER_HOSTNAME=localhost
+      - LDAP_URI=ldaps://172.17.0.1
+      - LDAP_BASE_DN=
+      - LDAP_REQUIRE_STARTTLS=FALSE
+      - LDAP_IGNORE_CERT_ERRORS=TRUE
+      - LDAP_ADMINS_GROUP=ldap-admins
+      - LDAP_ADMIN_BIND_DN=uid=ldap-mgmt,ou=people
+      - LDAP_ADMIN_BIND_PWD=
+      - NO_HTTPS=TRUE
+      - ORGANISATION_NAME=
+      - SITE_NAME="Account Management"
+      - FORCE_RFC2307BIS=TRUE
+      - PASSWORD_HASH=CLEAR
+      - LDAP_DEBUG=FALSE
+        #- LDAP_GROUP_MEMBERSHIP_ATTRIBUTE=member
+      - LDAP_ACCOUNT_ADDITIONAL_OBJECTCLASSES=nsMemberOf
+        #- LDAP_GROUP_MEMBERSHIP_USES_UID=FALSE
+    volumes:
+      - /data/ldap-user-manager/www:/opt/ldap_user_manager
+
+  portal:
+    image: ltbproject/self-service-password:1.4.2
+    container_name: portal
+    restart: unless-stopped
+    networks:
+      - net_master_nginx
+    expose:
+      - 80
+    volumes:
+      - /data/portal/portal.conf.php:/var/www/conf/config.inc.local.php
