@@ -1,0 +1,17 @@
+version: '3.9'
+
+networks:
+  net_portainer:
+    external:
+      name: net_portainer
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /data/portainer/data:/data
+    restart: unless-stopped
+    networks:
+      - net_portainer
