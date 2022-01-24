@@ -1,0 +1,43 @@
+version: '3.9'
+
+networks:
+  net_orangehrm:
+    external:
+      name: net_orangehrm
+  net_openhrms:
+    external:
+      name: net_openhrms
+  net_rocketchat:
+    external:
+      name: net_rocketchat
+  net_nexus3:
+    external:
+      name: net_nexus3
+  net_rundeck:
+    external:
+      name: net_rundeck
+  net_guacamole:
+    external:
+      name: net_guacamole
+
+
+services:
+  master-nginx:
+    image: nginx:1.19
+    container_name: master-nginx
+    restart: unless-stopped
+    volumes:
+      - /data/master-nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /data/master-nginx/etc/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    networks:
+      - net_orangehrm
+      - net_openhrms
+      - net_rocketchat
+      - net_nexus3
+      - net_rundeck
+      - net_guacamole
+    ports:
+      - 80:80
+      - 443:443
+    sysctls:
+      net.ipv6.conf.all.disable_ipv6: 1
