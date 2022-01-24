@@ -1,0 +1,25 @@
+version: '3.9'
+
+networks:
+  net_gitlab:
+    external:
+      name: net_gitlab
+
+services:
+
+  gitlab-ce:
+    image: 'gitlab/gitlab-ce:13.11.1-ce.0'
+    container_name: gitlab-ce
+    restart: unless-stopped
+    hostname: 'codes.volnet.dev'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://codes.volnet.dev'
+    ports:
+      - '8322:22'
+    volumes:
+      - '/data/gitlab/config:/etc/gitlab'
+      - '/data/gitlab/logs:/var/log/gitlab'
+      - '/data/gitlab/data:/var/opt/gitlab'
+    networks:
+      - net_gitlab
