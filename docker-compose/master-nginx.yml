@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  master-nginx:
+    image: nginx:1.19
+    container_name: master-nginx
+    restart: unless-stopped
+    volumes:
+      - /data/master-nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /data/master-nginx/etc/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    networks:
+      - net_guacamole
+      - net_phpmyadmin
+      - net_openldap
+      - net_vault
+    ports:
+      - 80:80
+      - 443:443
