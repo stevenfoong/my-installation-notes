@@ -1,0 +1,5 @@
+allow 18.142.151.168;
+allow 42.61.121.234;
+allow 10.3.1.124;
+deny all;
+error_page 403 =404 https://ecsmy.com/error;
