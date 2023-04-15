@@ -26,3 +26,6 @@ cd ApacheDirectoryStudio
 default login  
 id: uid=admin,ou=system  
 password: secret
+
+Change the admin password 
+Create additional admin account for other module
