@@ -1,7 +1,9 @@
 mkdir -p /data/nextcloud/db  
 mkdir -p /data/nextcloud/app  
 
-Create nextcloud.yml, generator a password  
+docker network create -d bridge nextcloud  
+
+Create db.env, generator a password  
 ```
 MYSQL_PASSWORD=
 MYSQL_DATABASE=nextcloud
