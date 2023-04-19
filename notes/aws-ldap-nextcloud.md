@@ -1,7 +1,7 @@
 ## This installation steps is to install Nextcloud with Ldap authentication on AWS linux.
 Minimum 4GB RAM, 8GB RAM is recommended  
 
-### This setup will use Cloudflare Zero Trust Tunnel to reach all container, that why no port expose
+### This setup will use Cloudflare Zero Trust Tunnel to reach all container, that why no port expose except the ldap port
 
 ### Install Docker service
 Remember to change the docker compose version
@@ -181,3 +181,32 @@ docker exec portal sed -i 's/$keyphrase = "secret";/$keyphrase = "longersecret";
 
 ```
 
+### Install Cloudflare tunnel to access the LAM and self service portal
+Remember to replace the cloudflare tunnel token
+
+```
+cat << EOF > cf-tunnel.yml
+version: "3.8"
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel
+    restart: unless-stopped
+    networks:
+      - ldap
+      - nextcloud
+    command: tunnel --no-autoupdate run --token 
+
+networks:
+  ldap:
+    name: ldap
+    external: true
+  nextcloud:
+    name: nextcloud
+    external: true
+
+EOF
+
+ docker-compose -f cf-tunnel.yml up -d
+ 
+```
