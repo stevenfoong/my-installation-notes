@@ -1,5 +1,7 @@
 ## This installation steps is to install Nextcloud with Ldap authentication on AWS linux.
 
+Minimum 4GB RAM, 8GB RAM is recommended  
+
 ### Install Docker service
 Remember to change the docker compose version
 
