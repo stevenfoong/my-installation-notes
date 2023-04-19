@@ -354,4 +354,37 @@ docker-compose -f nextcloud.yml up -d
 
 ```
 
-Browse the nextcloud URL
+Browse the nextcloud URL  
+Create the nextcloud admin account to continue.  
+Once the initial installation completed, process to install LDAP authentication modules.  
+
+### Configure Nextcloud LDAP authentication
+-> Click on top right user account icon -> Apps  
+Search for LDAP user and group backend and Enable it  
+-> Click on top right user account icon -> Administration settings -> LDAP/AD integration  
+- Host: ldap
+- Port: 3389
+- User DN: cn=Directory Manager
+- Password: password (Change accordingly)
+- Save Credentials
+- Base DN: dc=exmaple,dc=com (Change accordingly)
+- Continue
+- Verify settings and count users (It should show the number of user account in ldap)
+- Continue
+- Type a user name into Test Loginname box and click verify settings
+- Continue
+- Only these object classes: posixGroup
+- Verify settings and count groups (It should show the number of group in ldap)
+-> Click on top right user account icon -> Users
+All users account will be list here
+
+### Configure Nextcloud office
+-> Click on top right user account icon -> Administration settings -> Nextcloud Office  
+Enter the domain name of the collabora server into URL (and Port) of Collabora Online-server box and click Save  
+
+In order to verify the Nextcloud office is working, click files icon at the top  
+Then click the plus icon and select New Document or New spreadsheet.  
+If you able to see the New spreadsheet editor screen , then the Nextcloud office is working fine.  
+
+You can proceed to verify the Nextcloud office real-time co-authoring by sharing a word or spreadsheet with another user and try to open/edit the file at the same time  
+# The End
