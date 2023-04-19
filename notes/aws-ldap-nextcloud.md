@@ -353,6 +353,16 @@ EOF
 docker-compose -f nextcloud.yml up -d
 
 ```
+add the following line into /data/nextcloud/app/config/config.php to fix the user not redirect after successful login
+
+```
+'overwriteprotocol' => 'https',
+```
+Restart Nextcloud
+```
+docker restart nextcloud-app
+
+```
 
 Browse the nextcloud URL  
 Create the nextcloud admin account to continue.  
