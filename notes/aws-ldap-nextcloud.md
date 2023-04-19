@@ -6,7 +6,7 @@ Minimum 4GB RAM, 8GB RAM is recommended
 Remember to change the docker compose version
 
 ```
-amazon-linux-extras install docker
+amazon-linux-extras install docker -y
 systemctl enable docker
 systemctl start docker
 docker ps -a
