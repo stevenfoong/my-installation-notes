@@ -31,7 +31,6 @@ mkdir -p /data/ldap
 mkdir -p /data/nextcloud/app
 mkdir -p /data/nextcloud/db
 mkdir -p /data/lam/config
-mkdir -p /data/portal/config
 
 ```
 
@@ -164,8 +163,6 @@ services:
     restart: unless-stopped
     networks: 
       - ldap
-    volumes:
-      - /data/portal/config:/usr/share/self-service-password/conf/config.inc.local.php
 
 EOF
 docker-compose -f ldap-mgmt.yml up -d
