@@ -210,3 +210,33 @@ EOF
  docker-compose -f cf-tunnel.yml up -d
  
 ```
+
+### Configure LDAP Account Manager
+-> LAM configuration -> Edit server profiles  
+Default password for lam profile is lam  
+- Server address : ldap://ldap:3389
+- Tree suffix : dc=example, dc=com (change accordingly)
+- List of valid users: cn=Directory Manager
+- Profile passwor - New Password: (Generate a complex password)
+- Profile passwor - Reenter Password: (Enter the same complex password)
+- Account types - Users - LDAP suffix: ou=people,dc=example,dc=com
+- Account types - Groups - LDAP suffix: ou=groups,dc=example,dc=com
+- Module settings - Personal - Hidden options uncheck Display name
+
+Click Save button
+
+Try to login and create a new user account.
+
+These fields is mandatory 
+- Personal - First name
+- Personal - Last name
+- Personal - Display Name (This is the login name) 
+- Unix - User name (Same as Display Name)
+- Unix - Common name (Same as Display Name)
+
+Try to change new user account password.
+
+### Install Nextcloud
+
+
+
