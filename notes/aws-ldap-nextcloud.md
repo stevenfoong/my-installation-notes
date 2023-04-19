@@ -13,6 +13,7 @@ docker ps -a
 curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 docker-compose --version
+
 ```
 
 #### Create Docker network
@@ -20,6 +21,7 @@ docker-compose --version
 ```
 docker network create -d bridge ldap
 docker network create -d bridge nextcloud
+
 ```
 
 ### Create data folder
@@ -28,6 +30,7 @@ docker network create -d bridge nextcloud
 mkdir -p /data/ldap
 mkdir -p /data/nextcloud/app
 mkdir -p /data/nextcloud/db
+
 ```
 
 ### Install DS389
@@ -53,8 +56,10 @@ services:
     volumes:
       - /data/ldap:/data
 EOF
+
 ```
 
 ```
 docker-compose -f ds389.yml up -d
+
 ```
