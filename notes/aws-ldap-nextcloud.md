@@ -30,6 +30,7 @@ docker network create -d bridge nextcloud
 mkdir -p /data/ldap
 mkdir -p /data/nextcloud/app
 mkdir -p /data/nextcloud/db
+mkdir -p /data/lam/config
 
 ```
 
@@ -61,9 +62,44 @@ EOF
 
 ```
 docker-compose -f ds389.yml up -d
-docker ps -a
+docker logs ldap 2>&1 |grep "Set cn=Directory Manager password"
 
 ```
+Record the Directory Manager password and keep it safe.  
+  
+Now let launch the terminal from the container    
+```
+docker exec -it ldap /bin/bash
+
+```
+Execute this command within the container. Remember to change the suffix
+```
+dsconf localhost backend create --suffix dc=example,dc=com --be-name userRoot  
+exit
+
+```
+
+Add the line into /data/ldap/config/container.inf. Remember to change the suffix
+```
+echo "basedn = dc=example,dc=com" >> /data/ldap/config/container.inf
+
+```
+
+Now let launch the terminal from the container again    
+```
+docker exec -it ldap /bin/bash
+
+```
+Execute this command within the container. Remember to change the suffix
+```
+dsidm localhost initialise  
+exit
+
+```
+
+
+
+
 
 ### Install Apache Directory Studio
 This step is optional. You can skip if you don't need GUI ldap administration tool.  
@@ -84,3 +120,52 @@ cd ApacheDirectoryStudio
 ./ApacheDirectoryStudio  
 
 ```
+Create new ldap connection.  
+Connection name: Local ldap  
+Hostname: 127.0.0.1  
+Port: 389  
+
+Click Next button  
+
+Bind DN or User: cn=Directory Manager  
+Bind password: [Password that you found in the docker logs]  
+
+Click Finish button  
+
+If you configure correctly, you should be able to connect the ldap server.  
+
+### Install Ldap Account manager (LAM) and self service portal
+
+```
+cat << EOF > ldap-mgmt.yml
+version: '3.9'
+
+networks:
+  ldap:
+    name: ldap
+    external: true
+    
+services:
+  ldap-mgmt:
+    image: ghcr.io/ldapaccountmanager/lam:stable
+    container_name: ldap-mgmt
+    restart: unless-stopped
+    environment:
+      - LAM_SKIP_PRECONFIGURE=true
+    networks:
+      - ldap
+    volumes:
+      - /data/lam/config:/var/lib/ldap-account-manager/config
+    
+  portal:
+    image: ltbproject/self-service-password:1.5
+    container_name: portal
+    restart: unless-stopped
+    networks: 
+      - ldap
+    volumes:
+      - /data/potal/config:/usr/share/self-service-password/conf/config.inc.local.php
+
+EOF
+```
+
