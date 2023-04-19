@@ -168,5 +168,7 @@ services:
       - /data/potal/config:/usr/share/self-service-password/conf/config.inc.local.php
 
 EOF
+docker-compose -f ldap-mgmt.yml up -d
+
 ```
 
