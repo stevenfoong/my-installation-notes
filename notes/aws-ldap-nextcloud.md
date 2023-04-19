@@ -31,6 +31,7 @@ mkdir -p /data/ldap
 mkdir -p /data/nextcloud/app
 mkdir -p /data/nextcloud/db
 mkdir -p /data/lam/config
+mkdir -p /data/potal/config
 
 ```
 
