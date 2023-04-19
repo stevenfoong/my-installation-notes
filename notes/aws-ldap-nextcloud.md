@@ -47,7 +47,7 @@ networks:
 services:
   ldap:
     image: 389ds/dirsrv:2.2
-    container_name:ldap
+    container_name: ldap
     restart: unless-stopped
     networks:
       - ldap
