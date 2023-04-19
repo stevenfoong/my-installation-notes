@@ -61,5 +61,26 @@ EOF
 
 ```
 docker-compose -f ds389.yml up -d
+docker ps -a
+
+```
+
+### Install Apache Directory Studio
+This step is optional. You can skip if you don't need GUI ldap administration tool.  
+
+```
+amazon-linux-extras install mate-desktop1.x -y
+amazon-linux-extras install java-openjdk11 -y 
+yum install xterm -y
+
+```
+
+Login as ecs-user and make sure X11 forwarding is available
+
+```
+wget https://dlcdn.apache.org/directory/studio/2.0.0.v20210717-M17/ApacheDirectoryStudio-2.0.0.v20210717-M17-linux.gtk.x86_64.tar.gz
+tar -zxvf ApacheDirectoryStudio-2.0.0.v20210717-M17-linux.gtk.x86_64.tar.gz
+cd ApacheDirectoryStudio  
+./ApacheDirectoryStudio  
 
 ```
