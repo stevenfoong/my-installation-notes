@@ -238,5 +238,120 @@ Try to change new user account password.
 
 ### Install Nextcloud
 
+Replace the MYSQL_PASSWORD with complex password
 
+```
+cat << EOF > nc-db.env
+MYSQL_PASSWORD=password
+MYSQL_DATABASE=nextcloud
+MYSQL_USER=nextcloud
+EOF
 
+```
+
+Replace the MYSQL_ROOT_PASSWORD with complex password
+domain name for the collabora should be change accordingly , it should be the domain name of the nextcloud server
+
+```
+cat << EOF > nextcloud.yml
+version: '3'
+
+services:
+  db:
+    container_name: nextcloud-db
+    image: mariadb:10.6
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql:Z
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1
+    env_file:
+      - nc-db.env
+    networks:
+      - nextcloud
+
+  redis:
+    container_name: nextcloud-redis
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      - nextcloud
+
+  app:
+    container_name: nextcloud-app
+    image: nextcloud:apache
+    restart: unless-stopped
+    volumes:
+      - nextcloud:/var/www/html:z
+    environment:
+      - MYSQL_HOST=nextcloud-db
+      - REDIS_HOST=nextcloud-redis
+    env_file:
+      - nc-db.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - nextcloud
+      - ldap
+      
+  cron:
+    container_name: nextcloud-cron
+    image: nextcloud:apache
+    restart: unless-stopped
+    volumes:
+      - nextcloud:/var/www/html:z
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+    networks:
+      - nextcloud
+  
+  collabora:
+    container_name: nextcloud-collabora
+    image: collabora/code
+    restart: unless-stopped
+    environment:
+      - domain=cloud.example.com
+    networks:
+      - nextcloud
+  
+volumes:
+  db: 
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/nextcloud/db
+      
+  nextcloud:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/nextcloud/app
+  
+networks:
+  nextcloud:
+    name: nextcloud
+    external: true
+
+  ldap:
+    name: ldap
+    external: true
+  
+
+EOF
+
+```
+
+```
+docker-compose -f nextcloud.yml up -d
+
+```
+
+Browse the nextcloud URL
