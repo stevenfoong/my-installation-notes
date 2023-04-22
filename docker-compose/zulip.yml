@@ -1,0 +1,162 @@
+version: "3"
+
+services:
+  zulip-database:
+    image: zulip/zulip-postgresql:14
+    container_name: zulip-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=zulip
+      - POSTGRES_USER=zulip
+      # Note that you need to do a manual `ALTER ROLE` query if you
+      # change this on a system after booting the postgres container
+      # the first time on a host.  Instructions are available in README.md.
+      - POSTGRES_PASSWORD=[password]
+    volumes:
+      - zulip-postgresql-14:/var/lib/postgresql/data:rw
+    networks:
+      - zulip
+
+  zulip-memcached:
+    image: memcached:alpine
+    container_name: zulip-memcached
+    restart: unless-stopped
+    command:
+      - "sh"
+      - "-euc"
+      - |
+        echo 'mech_list: plain' > "$$SASL_CONF_PATH"
+        echo "zulip@$$HOSTNAME:$$MEMCACHED_PASSWORD" > "$$MEMCACHED_SASL_PWDB"
+        echo "zulip@localhost:$$MEMCACHED_PASSWORD" >> "$$MEMCACHED_SASL_PWDB"
+        exec memcached -S
+    environment:
+      - SASL_CONF_PATH=/home/memcache/memcached.conf
+      - MEMCACHED_SASL_PWDB=/home/memcache/memcached-sasl-db
+      - MEMCACHED_PASSWORD=[password]
+    networks:
+      - zulip
+
+  zulip-rabbitmq:
+    image: rabbitmq:3.7.7
+    container_name: zulip-rabbitmq
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=zulip
+      - RABBITMQ_DEFAULT_PASS=[password]
+    volumes:
+      - zulip-rabbitmq:/var/lib/rabbitmq:rw
+    networks:
+      - zulip
+
+  zulip-redis:
+    image: redis:alpine
+    container_name: zulip-redis
+    restart: unless-stopped
+    command:
+      - "sh"
+      - "-euc"
+      - |
+        echo "requirepass '$$REDIS_PASSWORD'" > /etc/redis.conf
+        exec redis-server /etc/redis.conf
+    environment:
+      - REDIS_PASSWORD=[password]
+    volumes:
+      - zulip-redis:/data:rw
+    networks:
+      - zulip
+
+  zulip:
+    image: zulip/docker-zulip:6.1-0
+    container_name: zulip
+    restart: unless-stopped
+    build:
+      context: .
+      args:
+        # Change these if you want to build zulip from a different repo/branch
+        ZULIP_GIT_URL: https://github.com/zulip/zulip.git
+        ZULIP_GIT_REF: "6.1"
+        # Set this up if you plan to use your own CA certificate bundle for building
+        # CUSTOM_CA_CERTIFICATES:
+    environment:
+      - DB_HOST=zulip-database
+      - DB_HOST_PORT=5432
+      - DB_USER=zulip
+      - SSL_CERTIFICATE_GENERATION=self-signed
+      - SETTING_MEMCACHED_LOCATION=zulip-memcached:11211
+      - SETTING_RABBITMQ_HOST=zulip-rabbitmq
+      - SETTING_REDIS_HOST=zulip-redis
+      - SECRETS_email_password=[password]
+      # These should match RABBITMQ_DEFAULT_PASS, POSTGRES_PASSWORD,
+      # MEMCACHED_PASSWORD, and REDIS_PASSWORD above.
+      - SECRETS_rabbitmq_password=[password]
+      - SECRETS_postgres_password=[password]
+      - SECRETS_memcached_password=[password]
+      - SECRETS_redis_password=[password]
+      - SECRETS_secret_key=[generate a random string more than 60 characters]
+      - SETTING_EXTERNAL_HOST=[domain name]
+      - SETTING_ZULIP_ADMINISTRATOR=[admin email address]
+      - SETTING_EMAIL_HOST=email-smtp.ap-southeast-1.amazonaws.com # e.g. smtp.example.com
+      - SETTING_EMAIL_HOST_USER=[Email account ID]
+      - SETTING_EMAIL_PORT=587
+      # It seems that the email server needs to use ssl or tls and can't be used without it
+      - SETTING_EMAIL_USE_SSL=False
+      - SETTING_EMAIL_USE_TLS=True
+      - ZULIP_AUTH_BACKENDS=EmailAuthBackend,ZulipLDAPAuthBackend
+      - SECRETS_auth_ldap_bind_password=[password]
+      - SETTING_AUTH_LDAP_SERVER_URI=ldap://ldap:3389 # Or docker0 interface IP if LDAP is on same host
+      - SETTING_AUTH_LDAP_BIND_DN=cn=Directory Manager
+      - 'SETTING_AUTH_LDAP_USER_SEARCH=LDAPSearch("ou=people,dc=example,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")'
+      - SETTING_LDAP_APPEND_DOMAIN=example.com
+      - 'SETTING_AUTH_LDAP_USER_ATTR_MAP={ "first_name": "givenName", "last_name": "sn" }'
+        #- MANUAL_CONFIGURATION=True
+        #- LINK_SETTINGS_TO_DATA=True
+        #- DEBUG=True
+      # Uncomment this when configuring the mobile push notifications service
+      # SETTING_PUSH_NOTIFICATION_BOUNCER_URL: 'https://push.zulipchat.com'
+    volumes:
+      - zulip:/data:rw
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1048576
+    networks:
+      - zulip
+      - ldap
+
+volumes:
+  zulip:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/zulip/app
+
+  zulip-postgresql-14:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/zulip/db
+
+  zulip-rabbitmq:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/zulip/rabbitmq
+
+  zulip-redis:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /data/zulip/redis
+
+
+networks:
+  zulip:
+    name: zulip
+    external: true
+  ldap:
+    name: ldap
+    external: true
