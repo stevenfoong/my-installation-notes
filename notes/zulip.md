@@ -21,3 +21,5 @@ https://zulip.com/api/send-message
 
 https://chat.example.com/api/v1/server_settings  
 
+Reference:  
+https://gist.github.com/flavienbwk/c6fcb5d0ab9ec01eab88cbd9fb2edfb8  
