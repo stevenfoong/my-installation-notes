@@ -14,3 +14,10 @@ new Zulip organization:
     https://localhost.localdomain:8443/new/4t1f3r0qet4eu0z0phyork8a
 
 ```
+
+
+Zelip API Doc  
+https://zulip.com/api/send-message  
+
+https://chat.example.com/api/v1/server_settings  
+
