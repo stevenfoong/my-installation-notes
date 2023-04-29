@@ -151,12 +151,8 @@ services:
     image: ghcr.io/ldapaccountmanager/lam:stable
     container_name: ldap-mgmt
     restart: unless-stopped
-    environment:
-      - LAM_SKIP_PRECONFIGURE=true
     networks:
       - ldap
-    volumes:
-      - /data/lam/config:/var/lib/ldap-account-manager/config
     
   portal:
     image: ltbproject/self-service-password:1.5
