@@ -21,10 +21,10 @@ services:
     image: mariadb:latest
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ‘MariaDBRootPSW’
-      MYSQL_DATABASE: ‘guacamole_db’
-      MYSQL_USER: ‘guacamole_user’
-      MYSQL_PASSWORD: ‘MariaDBUserPSW’
+      MYSQL_ROOT_PASSWORD: 'MariaDBRootPSW'
+      MYSQL_DATABASE: 'guacamole_db'
+      MYSQL_USER: 'guacamole_user'
+      MYSQL_PASSWORD: 'MariaDBUserPSW'
     volumes:
       - /data/guacamole/mysql:/docker-entrypoint-initdb.d:ro
       - /data/guacamole/mysql/data:/var/lib/mysql/:rw
