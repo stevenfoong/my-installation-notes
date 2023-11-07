@@ -45,6 +45,6 @@ docker cp guac_db.sql guacdb:/guac_db.sql
 Opening a shell and initializing the db:
 ```
 docker exec -it guacdb bash
-cat /guac_db.sql | mysql -u root -p guacamole_db
+cat /guac_db.sql | /usr/sbin/mariadbd -u root -p guacamole_db
 exit
 ```
