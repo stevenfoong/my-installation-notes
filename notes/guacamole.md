@@ -82,10 +82,15 @@ Extend the guacamole.yml with the rest of the service
       MYSQL_DATABASE: guacamole_db
       MYSQL_USER: guacamole_user
       MYSQL_PASSWORD: MariaDBUserPSW
-
     ports:
       - 8081:8080/tcp
     networks:
       - net_guacamole
 
 ```
+
+Start all the service
+```
+docker compose -f guacamole.yml up -d
+```
+
