@@ -1,0 +1,32 @@
+version: '3.9'
+
+networks:
+  ldap:
+    name: net_ldap
+    external: true
+
+services:
+  ldap:
+    image: 389ds/dirsrv:3.0
+    container_name: ldap
+    restart: unless-stopped
+    networks:
+      - ldap
+    ports:
+      - "389:3389"
+    volumes:
+      - /data/ldap:/data
+
+  ldap-mgmt:
+    image: ghcr.io/ldapaccountmanager/lam:stable
+    container_name: ldap-mgmt
+    restart: unless-stopped
+    networks:
+      - ldap
+
+  ldap-selfservice-portal:
+    image: ltbproject/self-service-password:1.5
+    container_name: ldap-portal
+    restart: unless-stopped
+    networks:
+      - ldap
