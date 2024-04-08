@@ -22,3 +22,7 @@ If the DB is encrypted by AWS manage key , perform the following steps
 ### Sharing a DB snapshot
 https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ShareSnapshot.html
 
+### Allowing users in other accounts to use a KMS key
+https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-modifying-external-accounts.html
+
+
