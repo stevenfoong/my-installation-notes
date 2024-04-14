@@ -1,0 +1,18 @@
+version: '3.9'
+
+networks:
+  net_guacamole:
+    external: true
+    name: net_guacamole
+
+services:
+
+  cf-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=TOKEN
+    networks:
+      - net_guacamole
