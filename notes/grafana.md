@@ -13,11 +13,11 @@ docker exec -it grafana /bin/bash
 ```
 ### Get list of available plugins
 ```
-grafana-cli plugins list-remote
+grafana cli plugins list-remote
 ```
 ### Install zabbix plugin
 ```
-grafana-cli plugins install alexanderzobnin-zabbix-app
+grafana cli plugins install alexanderzobnin-zabbix-app
 ```
 
 ### Restart grafana after installing plugins
@@ -29,3 +29,5 @@ exit
 ```
 docker restart grafana
 ```
+
+### To configure grafana authenticate with ldap
