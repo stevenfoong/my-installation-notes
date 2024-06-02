@@ -31,3 +31,7 @@ docker restart grafana
 ```
 
 ### To configure grafana authenticate with ldap
+edit file in the container  
+```` /etc/grafana/grafana.ini````  
+```` /etc/grafana/ldap.toml````  
+and restart the container  
