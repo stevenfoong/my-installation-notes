@@ -1,6 +1,11 @@
+### Create data folder
+```
+mkdir -p /data/grafana
+chown 472:472 /data/grafana
+```
 ### Install grafana using docker
 ```
-docker run -d --name=grafana -p 3000:3000 grafana/grafana-oss
+docker run -d --name=grafana -p 3000:3000  -v /data/grafana:/var/lib/grafana  grafana/grafana-oss
 ```
 ### Enter grafana container
 ```
