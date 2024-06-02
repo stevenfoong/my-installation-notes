@@ -1,6 +1,7 @@
 ### Create the data folder
 ```
 mkdir -p /data/openldap
+chown 1001:1001 /data/openldap
 ```
 
 ### Launch the openldap container
