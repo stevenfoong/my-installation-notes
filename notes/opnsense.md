@@ -27,4 +27,6 @@
 gpart resize -i 3 da0 #freebsd-usf id = 3
 gpart show #check the resize is done
 growfs /dev/gpt/rootfs #scanning the new space added to the partition mount.
-exit #exit shell
+exit #exit shell  
+
+reference : https://roofman.me/2021/01/26/opnsense-resize-disk-space/
