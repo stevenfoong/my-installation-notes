@@ -34,3 +34,24 @@
 #exit shell  
 
 reference : https://roofman.me/2021/01/26/opnsense-resize-disk-space/
+
+For 42GB  
+  
+\# gpart show  
+=>      40  88080304  da0  GPT  (42G)  
+        40    532480    1  efi  (260M)  
+    532520      1024    2  freebsd-boot  (512K)  
+    533544  49798144    3  freebsd-ufs  (24G)  
+  50331688  16777136    4  freebsd-swap  (8.0G)  
+  67108824  20971520       - free -  (10G)    
+  
+gpart add -t freebsd-swap -b 71303168 da0  
+
+\# gpart show  
+=>      40  88080304  da0  GPT  (42G)  
+        40    532480    1  efi  (260M)  
+    532520      1024    2  freebsd-boot  (512K)  
+    533544  49798144    3  freebsd-ufs  (24G)  
+  50331688  20971480       - free -  (10G)  
+  71303168  16777176    4  freebsd-swap  (8.0G)  
+
