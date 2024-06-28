@@ -23,10 +23,14 @@
 #assign label for the new partition for opnsense booting  
 `swapon /dev/gpt/swapfs`  
 #start the swapping on the system  
-#we moved now the swap to the end of disk, let's increase root partition size
-gpart resize -i 3 da0 #freebsd-usf id = 3
-gpart show #check the resize is done
-growfs /dev/gpt/rootfs #scanning the new space added to the partition mount.
-exit #exit shell  
+#we moved now the swap to the end of disk, let's increase root partition size  
+`gpart resize -i 3 da0`  
+#freebsd-usf id = 3  
+`gpart show`  
+#check the resize is done  
+`growfs /dev/gpt/rootfs`  
+#scanning the new space added to the partition mount.  
+`exit`   
+#exit shell  
 
 reference : https://roofman.me/2021/01/26/opnsense-resize-disk-space/
