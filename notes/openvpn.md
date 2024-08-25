@@ -31,3 +31,5 @@ At other client ad this will redirect all traffic to the other client that have 
 ```
 redirect-gateway def1
 ```
+References:  
+https://community.openvpn.net/openvpn/wiki/RoutedLans
