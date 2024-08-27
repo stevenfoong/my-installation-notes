@@ -25,7 +25,7 @@ sudo iptables-restore < /etc/iptables.ipv4.nat
 ```
 At the outgoing point add this to the client configuration  
 ```
-iroute 0.0.0.0 128.0.0.0
+iroute 0.0.0.0 0.0.0.0
 ```
 At other client ad this will redirect all traffic to the other client that have iroute configure  
 ```
