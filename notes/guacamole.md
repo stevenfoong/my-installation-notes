@@ -75,7 +75,7 @@ Extend the guacamole.yml with the rest of the service
     restart: unless-stopped
     depends_on:
       - guacd
-      - guacamole-mysql
+      - guacdb
     environment:
       GUACD_HOSTNAME: guacd
       MYSQL_HOSTNAME: guacdb
