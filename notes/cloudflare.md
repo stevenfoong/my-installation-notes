@@ -5,4 +5,7 @@ curl -X PATCH "https://api.cloudflare.com/client/v4/zones/ZONE_ID/settings/ipv6"
      -H "Content-Type: application/json" \
      --data '{"value":"off"}'
 ```
-  
+
+```
+docker run --name cf-tunnel -d --restart unless-stopped cloudflare/cloudflared:latest tunnel --no-autoupdate run --token XYZ
+```
