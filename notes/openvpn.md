@@ -1,3 +1,5 @@
+### This steps is to make one client (in this case is the raspberry pi) become the gateway of the VPN instead of the VPN server by default always the gateway.
+ 
 Raspberry pi install iptables  
 ```
 apt-get install iptables-persistent
