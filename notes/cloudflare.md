@@ -9,3 +9,8 @@ curl -X PATCH "https://api.cloudflare.com/client/v4/zones/ZONE_ID/settings/ipv6"
 ```
 docker run --name cf-tunnel -d --restart unless-stopped cloudflare/cloudflared:latest tunnel --no-autoupdate run --token XYZ
 ```
+
+```
+docker run --name cf-nas-tunnel -d --restart unless-stopped -p 445:445 cloudflare/cloudflared:latest access tcp --hostname nas.xyz.com --
+url 172.17.0.3:445
+```
