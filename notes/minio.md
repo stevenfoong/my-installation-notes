@@ -1,0 +1,1 @@
+docker run -dt -p 9000:9000 -p 9001:9001 -e MINIO_ROOT_USER=root -e MINIO_ROOT_PASSWORD=password -e "MINIO_DOMAIN=s3.abc.com" -v /data/AIStor/minio:/mnt/minio --name "aistor-server" quay.io/minio/aistor/minio:latest minio server /mnt/minio --license /mnt/minio/minio.license
