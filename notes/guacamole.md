@@ -94,3 +94,6 @@ Start all the service
 docker compose -f guacamole.yml up -d
 ```
 
+To configure SSO with Azure, please refer to this link.  
+https://www.henrycole.uk/2022/10/29/Setting-up-Azure-AD-SAML-SSO-on-Apache-Guacamole-in-Docker.html  
+
