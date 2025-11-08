@@ -87,5 +87,8 @@ linux01 IN A 10.1.1.1
 
 ```
   
-
-
+Use this command to spin up the docker image.  
+```
+docker run --name=my-unbound --volume=/data/unbound/opt/unbound/etc/unbound:/opt/unbound/etc/unbound/ --publish=53:53/tcp --publish=53:53/udp --restart=unless-stopped --detach=true unbound:1.24.1
+```
+  
