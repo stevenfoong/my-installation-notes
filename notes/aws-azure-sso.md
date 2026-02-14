@@ -5,7 +5,7 @@ BTW using this method, you will get an app icon in https://myapps.microsoft.com/
 Overview of steps:  
 
 #### At MS Entra ####   
-1. Create a new app in Microsoft Entra. AWS Single-Account Access
+1. Create a new app in Microsoft Entra. Enterprise Apps -> AWS Single-Account Access
 2. Enter Identifier (Entity ID) and Reply URL with the same default value: https://signin.aws.amazon.com/saml.
 3. Download the Federation Metadata XML.  
   
