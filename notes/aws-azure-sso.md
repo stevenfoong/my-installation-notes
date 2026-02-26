@@ -20,23 +20,7 @@ Overview of steps:
 11. Enter **https://signin.aws.amazon.com/saml**
 12. Click **Save** button and close the **Basic SAML Configuration** page.
 13. When prompted to test Single Sign-On, choose **No, I’ll test later.** to proceed without performing the test at this stage.
-14. Click **Edit** at the **Attributes & Claims** section
-15. Click on **Add new claim**
-16. Enter the following details.
-    Name: Role  
-    Source: Attribute  
-    Source attribute: user.assignedroles  
-17. Click **Save** button
-18. Repeat step 14 to create two additionals claims with the following details.
-    Name: RoleSessionName
-    Source: Attribute
-    Source Attribute: user.userprincipalname
-
-    Name : SessionDuration
-    Source: Attribute
-    Source Attribute: "43200"
-20. Close the **Attributes & Claims** page.
-21. Download the Federation Metadata XML.  
+14. Download the Federation Metadata XML.  
   
 #### At AWS Console #### 
 
@@ -44,7 +28,7 @@ Overview of steps:
 2. Click on **Identity providers**
 3. Click **Add provider**
 4. Enter the **Provider name**
-5. Upload the Federation Metada XML file that download at the step 21 in the previous section
+5. Upload the Federation Metada XML file that download at the step 15 in the previous section
 6. Click **Add provider** button to save change
 7. Click on **Roles**
 8. Click **Create Role**
@@ -102,10 +86,13 @@ Overview of steps:
 #### At MS Entra ####   
 1. Click on Provisioning
 2. Click **New configuration**
-3. 
-4.  section, configure the automatic provision.
-5. Restart the provisioning.
-6. At the Users and groups section, add user with the role. Make sure the AWS role is appear.
+3. Enter the **Client secret** and **Secret token** that generated at the step 43 in previous section.
+4. Click **Test connection**
+5. Once the test is success, click **Create**
+6. Click **Start provisioning** and click **Yes**
+7. Once the Initial sync completed, close the provisioning page
+8. Click **Users and groups** , click **Add user/group**
+9. Select User and make sure role had been selected. Click **Assign**
   
 Now user should be able to login by clicking the icon at https://myapps.microsoft.com/    
   
