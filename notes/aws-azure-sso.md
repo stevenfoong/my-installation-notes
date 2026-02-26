@@ -5,7 +5,21 @@ BTW using this method, you will get an app icon in https://myapps.microsoft.com/
 Overview of steps:  
 
 #### At MS Entra ####   
-1. Create a new app in Microsoft Entra. Enterprise Apps -> AWS Single-Account Access
+1. Create a new app in Microsoft Entra. Enterprise Apps -> New Application -> Create your own application 
+2. Enter the name of your app.
+3. Select **Integrate any other application you don't find in the gallery (Non-gallery)**
+4. Click on **Single sign-on**
+5. Click on **SAML**
+6. Click **Edit** at the **Basic SAML Configuration** section
+7. Click **Add identifier**
+8. In the Identifier field, enter: **https://signin.aws.amazon.com/saml** .  
+   If you plan to configure multiple AWS SSO applications within the same Microsoft Entra tenant, use the following format instead: **https://signin.aws.amazon.com/saml#abc**  
+   Append a # to the end of the base Identifier URL and add a unique ID (for example, abc). This ID must be unique within the Entra tenant and must not be duplicated across other AWS SSO configurations.
+9. Click **Add reply URL**
+10. Enter **https://signin.aws.amazon.com/saml**
+11. Click **Save** button and close the **Basic SAML Configuration** page.
+12. When it ask whether to test the single sign on, click on **No, I'll test later **
+13. 
 2. Enter Identifier (Entity ID) and Reply URL with the same default value: https://signin.aws.amazon.com/saml.
 3. Download the Federation Metadata XML.  
   
