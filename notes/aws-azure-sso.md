@@ -38,6 +38,36 @@ Overview of steps:
 21. Download the Federation Metadata XML.  
   
 #### At AWS Console #### 
+
+1. Goto **IAM Dashboard**
+2. Click on **Identity providers**
+3. Click **Add provider**
+4. Enter the **Provider name**
+5. Upload the Federation Metada XML file that download at the step 21 in the previous section
+6. Click **Add provider** button to save change
+7. Click on **Roles**
+8. Click **Create Role**
+9. Select **SAML 2.0 federation role**
+10. Select the **SAML 2.0–based provider** that created in the step 2
+11. Select **Access to be allowed**
+12. Select **Non-Regional endpoint**
+13. Select **With unique identifiers**
+14. Make sure the **Attribute value for non-Regional endpoint** value is **https://signin.aws.amazon.com/saml**
+15. Click **Next**
+16. Add required **Permissions policies**
+17. Click **Next**
+18. Enter **Role name**
+19. Click **Create Role**
+20. Define and create the necessary roles according to organizational needs.
+21. Click on **User**
+22. Click **Create User**
+23. Enter **User name**
+24. Click **Next**
+25. Select **Attach policies directly**
+26. Click **Create policy**
+27. Click **JSON** at the Policy editor
+28. 
+
 1. Create Identity providers
 2. Create SAML 2.0 federation role
 3. Create a service account that MS Entra able to list roles
