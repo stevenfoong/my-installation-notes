@@ -36,7 +36,7 @@ Overview of steps:
 10. Select the **SAML 2.0–based provider** that created in the step 2
 11. Select **Access to be allowed**
 12. Select **Non-Regional endpoint**
-13. Select **With unique identifiers**
+13. Select **Without unique identifiers**
 14. Make sure the **Attribute value for non-Regional endpoint** value is **https://signin.aws.amazon.com/saml**
 15. Click **Next**
 16. Add required **Permissions policies**
