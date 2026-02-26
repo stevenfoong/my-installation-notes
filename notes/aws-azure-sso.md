@@ -5,23 +5,24 @@ BTW using this method, you will get an app icon in https://myapps.microsoft.com/
 Overview of steps:  
 
 #### At MS Entra ####   
-1. Create a new app in Microsoft Entra. Enterprise Apps -> New Application -> Create your own application 
+1. Create a new app in Microsoft Entra. Enterprise Apps -> New Application -> Amazon Web Services (AWS) -> AWS Single-Account Access 
 2. Enter the name of your app.
-3. Select **Integrate any other application you don't find in the gallery (Non-gallery)**
+3. Click **Create**
 4. Click on **Single sign-on**
 5. Click on **SAML**
-6. Click **Edit** at the **Basic SAML Configuration** section
-7. Click **Add identifier**
-8. In the Identifier field, enter: **https://signin.aws.amazon.com/saml** .  
+6. When prompted to **Save single sign-on setting**, choose **No, I’ll save later.** to proceed without performing the save action at this stage.
+7. Click **Edit** at the **Basic SAML Configuration** section
+8. Click **Add identifier**
+9. In the Identifier field, enter: **https://signin.aws.amazon.com/saml** .  
    If you plan to configure multiple AWS SSO applications within the same Microsoft Entra tenant, use the following format instead: **https://signin.aws.amazon.com/saml#abc**  
    Append a # to the end of the base Identifier URL and add a unique ID (for example, abc). This ID must be unique within the Entra tenant and must not be duplicated across other AWS SSO configurations.
-9. Click **Add reply URL**
-10. Enter **https://signin.aws.amazon.com/saml**
-11. Click **Save** button and close the **Basic SAML Configuration** page.
-12. When prompted to test Single Sign-On, choose **No, I’ll test later.** to proceed without performing the test at this stage.
-13. Click **Edit** at the **Attributes & Claims** section
-14. Click on **Add new claim**
-15. Enter the following details.
+10. Click **Add reply URL**
+11. Enter **https://signin.aws.amazon.com/saml**
+12. Click **Save** button and close the **Basic SAML Configuration** page.
+13. When prompted to test Single Sign-On, choose **No, I’ll test later.** to proceed without performing the test at this stage.
+14. Click **Edit** at the **Attributes & Claims** section
+15. Click on **Add new claim**
+16. Enter the following details.
     Name: Role  
     Source: Attribute  
     Source attribute: user.assignedroles  
@@ -66,17 +67,45 @@ Overview of steps:
 25. Select **Attach policies directly**
 26. Click **Create policy**
 27. Click **JSON** at the Policy editor
-28. 
-
-1. Create Identity providers
-2. Create SAML 2.0 federation role
-3. Create a service account that MS Entra able to list roles
-4. Create access token for the service account
+28. Enter this into the Policy editor
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListRoles"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+29. Click **Next**
+30. Enter the Policy name
+31. Click **Create policy**
+32. Switch back to the page at step 25
+33. Click Refresh button next to the Create policy
+34. Search and select the Role created at step 31
+35. Click **Next**
+36. Click **Create User**
+37. Once the user account created, click on **View User** button
+38. Clik on **Security credentials**
+39. Click **Create access key**
+40. Select **Command Line Interface (CLI)** for the Use case
+41. Click **Next** 
+42. Click **Create access key**
+43. Record the **Access Key** and the **Secret access key**
+44. Click **Done**
 
 #### At MS Entra ####   
-1. At the Provisioning section, configure the automatic provision.
-2. Restart the provisioning.
-3. At the Users and groups section, add user with the role. Make sure the AWS role is appear.
+1. Click on Provisioning
+2. Click **New configuration**
+3. 
+4.  section, configure the automatic provision.
+5. Restart the provisioning.
+6. At the Users and groups section, add user with the role. Make sure the AWS role is appear.
   
 Now user should be able to login by clicking the icon at https://myapps.microsoft.com/    
   
