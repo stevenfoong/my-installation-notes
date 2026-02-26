@@ -18,10 +18,24 @@ Overview of steps:
 9. Click **Add reply URL**
 10. Enter **https://signin.aws.amazon.com/saml**
 11. Click **Save** button and close the **Basic SAML Configuration** page.
-12. When it ask whether to test the single sign on, click on **No, I'll test later **
-13. 
-2. Enter Identifier (Entity ID) and Reply URL with the same default value: https://signin.aws.amazon.com/saml.
-3. Download the Federation Metadata XML.  
+12. When prompted to test Single Sign-On, choose **No, I’ll test later.** to proceed without performing the test at this stage.
+13. Click **Edit** at the **Attributes & Claims** section
+14. Click on **Add new claim**
+15. Enter the following details.
+    Name: Role  
+    Source: Attribute  
+    Source attribute: user.assignedroles  
+17. Click **Save** button
+18. Repeat step 14 to create two additionals claims with the following details.
+    Name: RoleSessionName
+    Source: Attribute
+    Source Attribute: user.userprincipalname
+
+    Name : SessionDuration
+    Source: Attribute
+    Source Attribute: "43200"
+20. Close the **Attributes & Claims** page.
+21. Download the Federation Metadata XML.  
   
 #### At AWS Console #### 
 1. Create Identity providers
