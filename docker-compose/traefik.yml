@@ -6,11 +6,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
+      # - "8080:8080"
     environment:
+      #- CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      #- "CLOUDFLARE_EMAIL=kentarogenz@outlook.com"
+      #- CLOUDFLARE_API_KEY=${CF_DNS_API_TOKEN}
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
-      - "CLOUDFLARE_EMAIL=kentarogenz@outlook.com"
-      - CLOUDFLARE_API_KEY=${CF_DNS_API_TOKEN}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -27,7 +28,7 @@ services:
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.tls=true"
+      # - "--entrypoints.websecure.http.tls=true"
 
       # Attach the static configuration tls.yaml file that contains the tls configuration settings
       - "--providers.file.filename=/dynamic/tls.yaml"
@@ -68,14 +69,15 @@ services:
       - "traefik.enable=true"
 
       # Dashboard router
-      - "traefik.http.routers.dashboard.rule=Host(`dashboard-proxy.ydzfpay.com`)"
-      - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.tls=true"
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.proxy.com`)
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.tls.certresolver=le
 
       # Basic‑auth middleware
-      - "traefik.http.middlewares.dashboard-auth.basicauth.users=IwQ2CnpxGmk1OKSgjmVt7Uu6R91d4ZMI:$$apr1$$y0OYGbBt$$gVeBp61pLFMQnKxQbjqa6."
-      - "traefik.http.routers.dashboard.middlewares=dashboard-auth@docker"
+      - traefik.http.middlewares.dashboard-auth.basicauth.users=<htpasswd -nb admin "password" | sed -e 's/\$/\$\$/g'>
+      - traefik.http.routers.dashboard.middlewares=dashboard-auth@docker
 
     logging:
       driver: "json-file"
