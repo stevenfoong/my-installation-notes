@@ -6,18 +6,15 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
-      - "CLOUDFLARE_EMAIL=kentarogenz@outlook.com"
-      - CLOUDFLARE_API_KEY=${CF_DNS_API_TOKEN}
+      - ACME_EMAIL=${ACME_EMAIL}
+      - DASHBOARD_DOMAIN=${DASHBOARD_DOMAIN}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /data/traefik/certs:/certs:ro
-      - /data/traefik/dynamic:/dynamic:ro
+      - /data/traefik/letsencrypt:/letsencrypt
       - /data/traefik/config:/etc/traefik
-      - /data/traefik/traefik-ssl-certs:/ssl-certs
       - /etc/localtime:/etc/localtime
 
     command:
@@ -29,49 +26,40 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
 
-      # Attach the static configuration tls.yaml file that contains the tls configuration settings
-      - "--providers.file.filename=/dynamic/tls.yaml"
-
-      # Providers 
+      # Providers
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       # - "--providers.docker.network=proxy"
 
-      # API & Dashboard 
+      # API & Dashboard
       - "--api.dashboard=true"
       - "--api.insecure=false"
-       
-      # Observability 
+
+      # Observability
       - "--log.level=INFO"
       - "--accesslog=true"
       - "--metrics.prometheus=true"
 
-      - "--certificatesresolvers.le.acme.email=your-email@example.com"
-      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json" # Path inside container volume
-      # - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=dns"
+      # Let's Encrypt with Cloudflare DNS Challenge
+      - "--certificatesresolvers.le.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.le.acme.dnschallenge.delaybeforecheck=5"
+      - "--certificatesresolvers.le.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
 
-      - "--certificatesresolvers.le.acme.dnschallenge.provider=cloudflare" # Needs provider setup
-      - "--certificatesResolvers.le.acme.dnsChallenge.delayBeforeCheck=5"
-
-      # Optionally make 'le' the default resolver for TLS-enabled routers
+      # Make 'le' the default resolver for all TLS-enabled routers
       - "--entrypoints.websecure.http.tls.certresolver=le"
 
     labels:
-      #- "traefik.enable=true"
-      #- "traefik.http.routers.traefik.entrypoints=websecure"
-      #- "traefik.http.routers.traefik.tls.certresolver=myresolver"
-      #- "traefik.http.routers.traefik.rule=Host(`traefik.domain.id`)"
-      #- "traefik.http.routers.traefik.service=api@internal"
-
-      # Traefik Dynamic configuration via Docker labels
       # Enable self‑routing
       - "traefik.enable=true"
 
-      # Dashboard router
-      - "traefik.http.routers.dashboard.rule=Host(`dashboard-proxy.ydzfpay.com`)"
+      # Dashboard router — protected by Let's Encrypt certificate
+      - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_DOMAIN}`)"
       - "traefik.http.routers.dashboard.entrypoints=websecure"
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=le"
 
       # Basic‑auth middleware
       - "traefik.http.middlewares.dashboard-auth.basicauth.users=IwQ2CnpxGmk1OKSgjmVt7Uu6R91d4ZMI:$$apr1$$y0OYGbBt$$gVeBp61pLFMQnKxQbjqa6."
