@@ -4,4 +4,4 @@ traefik
 
 traefik.frontend.auth.basic.users:
 
-echo $(htpasswd -nbB username "password") | sed -e s/\\$/\\$\\$/g
+htpasswd -nb g15fud0dYQ8swvd7l8sFNwrRzb27aIxYDVvE1vm2eRh1Yz36Os "MjBUod6ROdryPetp0Ec0xMNG6WkOobNhj51GaYYw887t3eNvSg" | sed -e 's/\$/\$\$/g'  
