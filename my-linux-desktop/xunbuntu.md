@@ -34,3 +34,8 @@
 - The install pulled in GNOME Shell and gdm3 as recommended packages. Kept `lightdm` as the display manager, then removed:
   `gdm3 gnome-shell gnome-shell-common yaru-theme-gnome-shell gnome-session-bin gnome-session-common gnome-control-center gnome-control-center-data gnome-control-center-faces ubuntu-session gnome-startup-applications`
 - Tip: use `apt-get install --no-install-recommends xdg-desktop-portal-gnome` to avoid pulling in GNOME Shell and gdm3.
+
+### Photo and video viewer with next/previous (like Windows Photos)
+- Issue: Ristretto and Parole were still set as defaults but weren't installed.
+- Installed `gthumb` (shows photos and videos in one viewer, arrow keys for next/previous) plus `gstreamer1.0-gtk3` and `gstreamer1.0-plugins-bad` for video playback, using `--no-install-recommends`.
+- Made gThumb the default for common photo and video types: `xdg-mime default org.gnome.gThumb.desktop image/jpeg video/mp4 ...`
