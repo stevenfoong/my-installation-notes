@@ -39,3 +39,17 @@
 - Issue: Ristretto and Parole were still set as defaults but weren't installed.
 - Installed `gthumb` (shows photos and videos in one viewer, arrow keys for next/previous) plus `gstreamer1.0-gtk3` and `gstreamer1.0-plugins-bad` for video playback, using `--no-install-recommends`.
 - Made gThumb the default for common photo and video types: `xdg-mime default org.gnome.gThumb.desktop image/jpeg video/mp4 ...`
+
+## 2026-11-24
+
+### Hibernate
+- Issue: Ubuntu hides Hibernate by default, and the 8 GB swap file was smaller than the 30 GB of RAM.
+- Ran `sudo bash scripts/xubuntu_enable_hibernate.sh 32`, which:
+  - grows `/swap.img` to 32 GB
+  - adds `resume=UUID=<root UUID> resume_offset=<offset>` to GRUB (backup at `/etc/default/grub.bak-before-hibernate`) and to `/etc/initramfs-tools/conf.d/resume`
+  - adds the polkit rule `/etc/polkit-1/rules.d/85-allow-hibernate.rules` so Hibernate shows in the log-out menu
+- Requires Secure Boot to be off. Reboot once after running it. Tested and working on this machine.
+- If the swap file is ever recreated, rerun the script, because `resume_offset` changes.
+
+### Copying large files from the phone
+- Nautilus shows copy progress only at the bottom of its sidebar, and it can't be detached. Thunar shows a separate progress window, so use Thunar for big copies.
